@@ -14,12 +14,12 @@ public class DemoController {
     private DepartmentService departmentService;
 
     @GetMapping("/departments")
-    public List<Department> hello() {
+    public List<Department> fetchDepartmentList() {
         return departmentService.fetchDepartmentList();
     }
 
     @PostMapping("/departments")
-    public Department fetchDepartmentList(@RequestBody Department department) {
+    public Department createDepartment(@RequestBody Department department) {
         return departmentService.saveDepartment(department);
     }
 
