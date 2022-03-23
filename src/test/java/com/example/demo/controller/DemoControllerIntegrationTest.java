@@ -3,7 +3,6 @@ package com.example.demo.controller;
 import com.example.demo.entity.Department;
 import com.example.demo.repository.DepartmentRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -38,6 +38,7 @@ public class DemoControllerIntegrationTest {
                 .departmentAddress("Dep address")
                 .build();
         departmentRepository.save(dept);
+//        departmentRepository.findB
 
         assert departmentRepository.count() == 1;
         mockMvc.perform(get("/departments").contentType(MediaType.APPLICATION_JSON))
@@ -71,7 +72,7 @@ public class DemoControllerIntegrationTest {
                 .andExpect(jsonPath("$.departmentAddress", is("Dep address")))
                 .andExpect(jsonPath("$.departmentCode", is("DEPCO")));
 
-        assert departmentRepository.count() == 1;
+        assertThat(departmentRepository.count()).isEqualTo(1);
     }
 
     @Test
@@ -91,7 +92,7 @@ public class DemoControllerIntegrationTest {
         ObjectMapper mapper = new ObjectMapper();
         String requestBody = mapper.writeValueAsString(deptUpdate);
 
-        assert departmentRepository.count() == 1;
+        assertThat(departmentRepository.count()).isEqualTo(1);
         mockMvc.perform(put("/departments/" + deptAfterSave.getDepartmentId()).contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isOk())
@@ -100,7 +101,7 @@ public class DemoControllerIntegrationTest {
                 .andExpect(jsonPath("$.departmentAddress", is("Dep address3")))
                 .andExpect(jsonPath("$.departmentCode", is("DEPCO1")));
 
-        assert departmentRepository.count() == 1;
+        assertThat(departmentRepository.count()).isEqualTo(1);
     }
 
     @Test
@@ -111,7 +112,7 @@ public class DemoControllerIntegrationTest {
                 .departmentAddress("Dep address")
                 .build();
         Department deptAfterSave = departmentRepository.save(dept);
-        assert departmentRepository.count() == 1;
+        assertThat(departmentRepository.count()).isEqualTo(1);
 
         mockMvc.perform(delete("/departments/" + deptAfterSave.getDepartmentId()).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -119,6 +120,6 @@ public class DemoControllerIntegrationTest {
                 .andExpect(content().string("Deleted Successfully"));
 
 //        verify(departmentRepository, times(0)).save(any(Department.class));
-        assert departmentRepository.count() == 0;
+        assertThat(departmentRepository.count()).isEqualTo(0);
     }
 }
